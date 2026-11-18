@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}МАСТЕРСКАЯ — изделия ручной работы{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a href="{% url 'home' %}" class="logo">МАСТЕРСКАЯ</a>
+            <button class="burger-btn" id="burgerBtn" type="button" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+                       <nav class="nav-menu" id="navMenu">
+                <a href="{% url 'catalog' %}">Изделия</a>
+                <span class="nav-item-static">Категории</span>
+                <span class="nav-item-static">Продавцы</span>
+                <a href="{% url 'about' %}">О нас</a>
+            </nav>
+
+
+            <div class="header-auth">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="btn btn-login-shape">{{ user.username }}</a>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-reg-shape">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-login-shape">Войти</a>
+                    <a href="{% url 'register' %}" class="btn btn-reg-shape">Регистрация</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p>© 2026 МАСТЕРСКАЯ — маркетплейс изделий ручной работы</p>
+            
+        </div>
+    </footer>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас — МАСТЕРСКАЯ{% endblock %}
+
+{% block content %}
+<section class="section about-story">
+    <h1>Наши вещи действительно говорят о том, кто мы есть.</h1>
+    <img src="{% static 'img/image copy 4.png' %}" alt="Керамика ручной работы">
+</section>
+
+<section class="section about-story">
+    <h2>Каждый день мы заполняем серый фон простыми вещами, которые делают нашу жизнь ярче.</h2>
+    <img src="{% static 'img/image copy 5.png' %}" alt="Авторские кувшины">
+</section>
+
+<section class="banner-box" id="masters">
+    <h2>Присоединяйтесь к нам</h2>
+    <p>Если вы ищете уникальные товары или оригинальный способ их продажи, то добро пожаловать на наш ресурс.</p>
+    <div class="join-cards">
+        <div class="join-card">
+            <h3>Продавцы</h3>
+            <p>Станьте продавцом прямо сейчас и начните зарабатывать</p>
+            <a href="{% url 'register' %}" class="btn btn-login-shape">Станьте продавцом</a>
+        </div>
+        <div class="join-card">
+            <h3>Покупатели</h3>
+            <p>Станьте покупателем прямо сегодня и покупайте самые лучшие вещи</p>
+            <a href="{% url 'register' %}" class="btn btn-login-shape">Станьте покупателем</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

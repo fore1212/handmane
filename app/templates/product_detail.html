@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ product.title }} — МАСТЕРСКАЯ{% endblock %}
+
+
+{% block content %}
+<div class="detail-grid section">
+    <div>
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.title }}" width="540" height="500">
+        {% else %}
+            <img src="{% static 'img/image copy 6.png' %}" alt="{{ product.title }}" width="540" height="500">
+        {% endif %}
+    </div>
+
+    <div class="detail-info">
+        <div class="section-header">
+            <h1>{{ product.title }}</h1>
+            <span class="detail-price">{{ product.price|floatformat:0 }} ₽</span>
+        </div>
+
+        <button type="button" class="btn btn-pill-dark" id="openOrderModal">КУПИТЬ СЕЙЧАС</button>
+
+        {% if user.is_authenticated %}
+            <button type="button" class="btn btn-pill-outline" id="favBtn" data-url="{% url 'toggle_favorite' product.pk %}">
+                {% if is_fav %}♥ В избранном{% else %}♡ Добавить в избранное{% endif %}
+            </button>
+        {% endif %}
+
+        <details class="accordion-item" open>
+            <summary>Об изделии</summary>
+            <p>{{ product.description }}</p>
+        </details>
+
+        <details class="accordion-item">
+            <summary>Подробная информация о товаре</summary>
+            <p><strong>Категория:</strong> {{ product.category.name }}<br>
+               <strong>Материал:</strong> {{ product.material }}<br>
+               <strong>Размеры:</strong> {{ product.dimensions|default:"Уточняются у продавца" }}</p>
+        </details>
+
+        <div class="guarantee-box">
+            <strong>100% гарантия счастья</strong>
+            <span>Покупайте с уверенностью. Простой возврат в течение 30 дней</span>
+        </div>
+
+        <div class="showcase-card">
+            <div class="showcase-badge">{{ product.showcase.master.rating|floatformat:1 }} </div>
+            <div>
+                <h3>{{ product.showcase.title }}</h3>
+                <p>{{ product.showcase.description|truncatechars:140 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="reviews-wrap">
+    <h2>Отзывы покупателей ({{ reviews.count }})</h2>
+    {% for rev in reviews %}
+        <article class="review-card">
+            <div class="review-head">
+                <strong>{{ rev.author.username }}, {{ rev.created_at|date:"d.m.Y" }}</strong>
+<span class="review-stars">Оценка: {{ rev.rating }} из 5</span>
+
+            </div>
+            <p>{{ rev.comment }}</p>
+        </article>
+    {% empty %}
+        <p>Отзывов пока нет. Будьте первым!</p>
+    {% endfor %}
+
+
+    {% if user.is_authenticated %}
+        <form method="post" class="review-form-clean" data-validate="true">
+            {% csrf_token %}
+            <h3>Оставить отзыв</h3>
+            {% for field in review_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button type="submit" name="submit_review" class="btn btn-pill">Отправить отзыв</button>
+        </form>
+    {% endif %}
+</section>
+
+<div class="modal" id="orderModal">
+    <div class="modal-box">
+        <div class="section-header">
+            <h2>Оформление заказа</h2>
+            <button type="button" class="btn btn-outline" id="closeOrderModal">✕</button>
+        </div>
+        <form method="post" data-validate="true">
+            {% csrf_token %}
+            {% for field in order_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button type="submit" name="submit_order" class="btn btn-pill-dark">Подтвердить заказ ({{ product.price|floatformat:0 }} ₽)</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

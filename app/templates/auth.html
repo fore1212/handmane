@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — МАСТЕРСКАЯ{% endblock %}
+
+
+{% block content %}
+<div class="auth-box">
+    <h1>{{ title }}</h1>
+    <form method="post" data-validate="true">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group {% if field.field.widget.input_type == 'checkbox' %}form-check{% endif %}">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-full">{{ btn_text }}</button>
+    </form>
+
+    {% if is_register %}
+        <p class="auth-switch">Уже есть аккаунт? <a href="{% url 'login' %}"><strong>Войти</strong></a></p>
+    {% else %}
+        <p class="auth-switch">Ещё нет аккаунта? <a href="{% url 'register' %}"><strong>Зарегистрироваться</strong></a></p>
+    {% endif %}
+</div>
+{% endblock %}

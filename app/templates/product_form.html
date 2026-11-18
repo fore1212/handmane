@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_edit %}Редактирование изделия{% else %}Добавить изделие{% endif %} — МАСТЕРСКАЯ{% endblock %}
+
+{% block content %}
+<div class="product-create-wrap">
+    <h1>{% if is_edit %}Редактировать изделие{% else %}Добавить новое изделие{% endif %}</h1>
+    <form method="post" enctype="multipart/form-data" data-validate="true">
+        {% csrf_token %}
+        {% for field in form %}
+            {% if field.name != 'image' %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="form-group">
+            <label>Фотография изделия</label>
+            <label class="file-upload-box" for="{{ form.image.id_for_label }}">
+                <span class="file-upload-plus">+</span>
+                <span>Добавить фотографию</span>
+                {{ form.image }}
+            </label>
+            {{ form.image.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-pill">Сохранить изделие</button>
+    </form>
+</div>
+{% endblock %}

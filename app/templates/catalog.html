@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<section class="section">
+    <div class="detail-grid">
+        <img src="{% static 'img/image copy 3.png' %}" alt="Ювелирные изделия" width="540" height="320">
+        <div class="detail-info">
+            <h1>Ювелирные изделия и авторские работы</h1>
+            <p>Ищите уникальное. Откройте для себя украшения и предметы ручной работы из серебра, стекла, глины и натуральных камней. Каждый дизайн оригинален и создан с любовью.</p>
+        </div>
+    </div>
+</section>
+
+<form method="get" action="{% url 'catalog' %}" class="filters-bar">
+    <input type="text" name="q" value="{{ q }}" placeholder="Поиск по названию или описанию...">
+    <select name="category" aria-label="Категория">
+        <option value="">Все категории</option>
+        {% for c in categories %}
+            <option value="{{ c.slug }}" {% if cat_slug == c.slug %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="number" name="min_price" value="{{ min_price }}" placeholder="Цена от, ₽">
+    <input type="number" name="max_price" value="{{ max_price }}" placeholder="Цена до, ₽">
+    <input type="text" name="material" value="{{ material }}" placeholder="Материал...">
+    <select name="sort" aria-label="Сортировка">
+        <option value="-created_at" {% if sort == '-created_at' %}selected{% endif %}>Сначала новые</option>
+        <option value="price" {% if sort == 'price' %}selected{% endif %}>Сначала дешевле</option>
+        <option value="-price" {% if sort == '-price' %}selected{% endif %}>Сначала дороже</option>
+        <option value="title" {% if sort == 'title' %}selected{% endif %}>По названию (А-Я)</option>
+    </select>
+    <button type="submit" class="btn">Найти</button>
+    <a href="{% url 'catalog' %}" class="btn btn-outline">Сбросить</a>
+</form>
+
+<div class="section">
+    <div class="grid-4">
+        {% for item in page_obj %}
+            <article class="product-card">
+                <a href="{% url 'product_detail' item.pk %}">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" width="280" height="260" loading="lazy">
+                    {% else %}
+                        <img src="{% static 'img/image copy 6.png' %}" alt="{{ item.title }}" width="280" height="260" loading="lazy">
+                    {% endif %}
+                    <h2 class="product-title">{{ item.title|truncatechars:40 }}</h2>
+                </a>
+                <p>{{ item.category.name }} . {{ item.material }}</p>
+                <p class="product-price">{{ item.price|floatformat:0 }} ₽</p>
+            </article>
+        {% empty %}
+            <p>По вашему запросу ничего не найдено.</p>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&category={{ cat_slug }}&sort={{ sort }}">&laquo; Назад</a>
+            {% endif %}
+            <span class="current">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&category={{ cat_slug }}&sort={{ sort }}">Вперёд &raquo;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
